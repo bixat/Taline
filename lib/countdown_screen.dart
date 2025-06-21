@@ -131,9 +131,10 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   Future<void> showNotification() async {
     LocalNotification notification = LocalNotification(
       title: inBreak ? "Stay Focused 💪" : "Take a Moment 🌟",
-      body: inBreak
-          ? "Keep your gaze on the screen. Remember, every 20 minutes, take a 20-second break looking at something 20 feet away."
-          : "Step back from the screen and focus on something 20 feet away for 20 seconds. Your eyes will thank you!",
+      body:
+          inBreak
+              ? "Keep your gaze on the screen. Remember, every 20 minutes, take a 20-second break looking at something 20 feet away."
+              : "Step back from the screen and focus on something 20 feet away for 20 seconds. Your eyes will thank you!",
     );
     notification.onShow = _onShowNotification;
     notification.show();
@@ -175,8 +176,10 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
         ),
         child: SafeArea(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -192,21 +195,25 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                     ),
                     const Spacer(),
                     IconButton(
-                        onPressed: () {
-                          _showSettings(context);
-                        },
-                        icon: const Icon(Icons.settings)),
+                      onPressed: () {
+                        _showSettings(context);
+                      },
+                      icon: const Icon(Icons.settings),
+                    ),
                     IconButton(
                       icon: Icon(
                         themeNotifier.value == ThemeMode.light
                             ? Icons.dark_mode_rounded
                             : Icons.light_mode_rounded,
                       ),
-                      onPressed: () {
-                        themeNotifier.value =
-                            themeNotifier.value == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light;
+                      onPressed: () async {
+                        if (themeNotifier.value == ThemeMode.light) {
+                          themeNotifier.value = ThemeMode.dark;
+                          await PreferenceService.setThemeMode('dark');
+                        } else {
+                          themeNotifier.value = ThemeMode.light;
+                          await PreferenceService.setThemeMode('light');
+                        }
                       },
                     ),
                   ],
@@ -218,34 +225,35 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                   Column(
                     children: [
                       RuleTimer(timer: _timer!, inBreak: inBreak),
-                      WorkBreakInfo(
-                        reminder: reminder,
-                        breakTime: breakTime,
-                      ),
+                      WorkBreakInfo(reminder: reminder, breakTime: breakTime),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AnimatedBuilder(
-                              animation: _timer!,
-                              builder: (context, _) {
-                                return IconButton(
-                                  icon: Icon(_timer!.status == TimerStatus.pause
+                            animation: _timer!,
+                            builder: (context, _) {
+                              return IconButton(
+                                icon: Icon(
+                                  _timer!.status == TimerStatus.pause
                                       ? Icons.play_arrow
-                                      : Icons.pause),
-                                  onPressed: () {
-                                    if (_timer!.status == TimerStatus.pause) {
-                                      _timer!.start();
-                                    } else {
-                                      _timer!.pause();
-                                    }
-                                  },
-                                );
-                              }),
+                                      : Icons.pause,
+                                ),
+                                onPressed: () {
+                                  if (_timer!.status == TimerStatus.pause) {
+                                    _timer!.start();
+                                  } else {
+                                    _timer!.pause();
+                                  }
+                                },
+                              );
+                            },
+                          ),
                           IconButton(
-                              onPressed: _restartTimer,
-                              icon: const Icon(Icons.restart_alt))
+                            onPressed: _restartTimer,
+                            icon: const Icon(Icons.restart_alt),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 const SizedBox(height: 32),
@@ -259,15 +267,16 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ValueListenableBuilder(
-                        valueListenable: appVersion,
-                        builder: (context, value, _) {
-                          return Text(
-                            'v$value',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          );
-                        }),
+                      valueListenable: appVersion,
+                      builder: (context, value, _) {
+                        return Text(
+                          'v$value',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 4),
                     MouseRegion(
                       cursor: SystemMouseCursors.click,
@@ -311,7 +320,9 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
             });
             PreferenceService.setDuration(min, sec);
             PreferenceService.setBool(
-                PreferenceService.forceModeKey, forceModeEnabled.value);
+              PreferenceService.forceModeKey,
+              forceModeEnabled.value,
+            );
             Navigator.pop(context);
           },
         );

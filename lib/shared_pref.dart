@@ -5,6 +5,16 @@ class PreferenceService {
   static const startupModeKey = "startup_mode";
   static const minutes = "minutes";
   static const seconds = "seconds";
+  static const themeModeKey = "theme_mode";
+  static Future<void> setThemeMode(String mode) async {
+    final prefs = await instance;
+    await prefs.setString(themeModeKey, mode);
+  }
+
+  static Future<String?> getThemeMode() async {
+    final prefs = await instance;
+    return prefs.getString(themeModeKey);
+  }
 
   static Future<SharedPreferences> get instance async =>
       await SharedPreferences.getInstance();
