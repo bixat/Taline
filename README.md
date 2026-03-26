@@ -1,7 +1,7 @@
-<a href="https://www.producthunt.com/products/eyescare?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-eyescare" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=779582&theme=light" alt="EyesCare - Health&#0032;&#0038;&#0032;Fitness&#0044;&#0032;Productivity&#0032; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-# Eyes Care Desktop App
+<a href="https://www.producthunt.com/products/eyescare?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-eyescare" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=779582&theme=light" alt="Taline - Health&#0032;&#0038;&#0032;Fitness&#0044;&#0032;Productivity&#0032; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+# Taline Desktop App
 
-Eyes Care is a desktop application built with Flutter, designed to help users maintain healthy eyes by following the 20-20-20 rule. The app reminds users to take regular breaks and rest their eyes to reduce eye strain and prevent digital eye fatigue.
+Taline is a desktop application built with Flutter, designed to help users maintain healthy eyes by following the 20-20-20 rule. The app reminds users to take regular breaks and rest their eyes to reduce eye strain and prevent digital eye fatigue.
 
 ## Screenshots
 
@@ -11,7 +11,7 @@ Eyes Care is a desktop application built with Flutter, designed to help users ma
 </div>
 
 ## Support
-<a href="https://github.com/bixat/eyes_care/releases/latest/download/EyesCaremacOS.dmg"><img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0" height=25></a><a href="https://github.com/bixat/eyes_care/releases/latest/download/EyesCareWindows.zip"><img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height=25></a><a href="https://github.com/bixat/eyes_care/releases/latest/download/EyesCareLinux.tar.gz"><img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" height=25></a>
+<a href="https://github.com/bixat/eyes_care/releases/latest/download/TalinemacOS.dmg"><img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0" height=25></a><a href="https://github.com/bixat/eyes_care/releases/latest/download/TalineWindows.zip"><img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" height=25></a><a href="https://github.com/bixat/eyes_care/releases/latest/download/TalineLinux.tar.gz"><img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" height=25></a>
 
 
 
@@ -44,13 +44,13 @@ Eyes Care is a desktop application built with Flutter, designed to help users ma
 
 ## Usage
 
-1. Launch the Eyes Care app on your desktop.
+1. Launch the Taline app on your desktop.
 2. Start using the app, and it will notify you when it's time to take a break.
 4. During each break, follow the 20-20-20 rule by looking at an object 20 feet away for 20 seconds.
 
 ## Contributing
 
-We welcome contributions from the community to enhance the Eyes Care app. To contribute, please follow these steps:
+We welcome contributions from the community to enhance the Taline app. To contribute, please follow these steps:
 
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature/your-feature-name`
@@ -66,7 +66,7 @@ We welcome contributions from the community to enhance the Eyes Care app. To con
 
 - [rocket_timer](https://pub.dev/packages/rocket_timer)
 
-Special thanks to these amazing projects from [LeanFlutter](https://github.com/leanflutter) which help power CareEyes:
+Special thanks to these amazing projects from [LeanFlutter](https://github.com/leanflutter) which help power Taline:
 
 - [local_notifier](https://pub.dev/packages/local_notifier)
 - [window_manager](https://pub.dev/packages/window_manager)
