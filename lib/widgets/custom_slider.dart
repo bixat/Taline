@@ -4,12 +4,16 @@ class CustomSlider extends StatelessWidget {
   final int value;
   final String title;
   final ValueChanged<double> onChanged;
+  final double min;
+  final double max;
 
   const CustomSlider({
     Key? key,
     required this.value,
     required this.onChanged,
     required this.title,
+    this.min = 1,
+    this.max = 60,
   }) : super(key: key);
 
   @override
@@ -36,7 +40,7 @@ class CustomSlider extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '$value ${title.contains('Break') ? 'seconds' : 'minutes'}',
+                '$value',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.w600,
@@ -64,8 +68,8 @@ class CustomSlider extends StatelessWidget {
           ),
           child: Slider(
             value: value.toDouble(),
-            min: 1,
-            max: 60,
+            min: min,
+            max: max,
             divisions: 50,
             onChanged: onChanged,
           ),

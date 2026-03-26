@@ -6,6 +6,8 @@ class PreferenceService {
   static const minutes = "minutes";
   static const seconds = "seconds";
   static const themeModeKey = "theme_mode";
+  static const languageKey = "language";
+
   static Future<void> setThemeMode(String mode) async {
     final prefs = await instance;
     await prefs.setString(themeModeKey, mode);
@@ -14,6 +16,16 @@ class PreferenceService {
   static Future<String?> getThemeMode() async {
     final prefs = await instance;
     return prefs.getString(themeModeKey);
+  }
+
+  static Future<void> setLanguage(String lang) async {
+    final prefs = await instance;
+    await prefs.setString(languageKey, lang);
+  }
+
+  static Future<String?> getLanguage() async {
+    final prefs = await instance;
+    return prefs.getString(languageKey);
   }
 
   static Future<SharedPreferences> get instance async =>

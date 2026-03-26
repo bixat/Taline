@@ -1,14 +1,19 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class WorkBreakInfo extends StatelessWidget {
-  const WorkBreakInfo(
-      {super.key, required this.reminder, required this.breakTime});
+  const WorkBreakInfo({
+    super.key,
+    required this.reminder,
+    required this.breakTime,
+  });
 
   final int reminder, breakTime;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +30,7 @@ class WorkBreakInfo extends StatelessWidget {
               ),
             ),
             Text(
-              " work",
+              " ${loc.work}",
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -43,7 +48,7 @@ class WorkBreakInfo extends StatelessWidget {
               ),
             ),
             Text(
-              " break",
+              " ${loc.breakPeriod}",
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

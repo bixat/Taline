@@ -1,3 +1,4 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:eyes_care/main.dart';
 import 'package:eyes_care/widgets/settings.dart';
 import 'package:eyes_care/widgets/work_break_info.dart';
@@ -129,12 +130,11 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   }
 
   Future<void> showNotification() async {
+    final loc = AppLocalizations.of(context);
     LocalNotification notification = LocalNotification(
-      title: inBreak ? "Stay Focused 💪" : "Take a Moment 🌟",
+      title: inBreak ? loc.stayFocused : loc.takeAMoment,
       body:
-          inBreak
-              ? "Keep your gaze on the screen. Remember, every 20 minutes, take a 20-second break looking at something 20 feet away."
-              : "Step back from the screen and focus on something 20 feet away for 20 seconds. Your eyes will thank you!",
+          inBreak ? loc.breakNotification : loc.workNotification,
     );
     notification.onShow = _onShowNotification;
     notification.show();
@@ -160,6 +160,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -187,7 +188,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                 Row(
                   children: [
                     Text(
-                      'Eyes Care',
+                      loc.appTitle,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.primary,
@@ -285,7 +286,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                           launchUrl(Uri.parse('https://bixat.dev'));
                         },
                         child: Text(
-                          'Powered by bixat.dev team',
+                          loc.poweredBy,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                             decoration: TextDecoration.underline,

@@ -1,3 +1,5 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
+import 'package:eyes_care/main.dart';
 import 'package:eyes_care/shared_pref.dart';
 import 'package:eyes_care/widgets/edit_rule_button.dart';
 import 'package:eyes_care/widgets/force_mode_check_box.dart';
@@ -23,12 +25,31 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    final languages = [
+      {'code': 'en', 'name': 'English', 'flag': '🇬🇧'},
+      {'code': 'ar', 'name': 'العربية', 'flag': '🇸🇦'},
+      {'code': 'es', 'name': 'Español', 'flag': '🇪🇸'},
+      {'code': 'fr', 'name': 'Français', 'flag': '🇫🇷'},
+      {'code': 'de', 'name': 'Deutsch', 'flag': '🇩🇪'},
+      {'code': 'zh', 'name': '中文', 'flag': '🇨🇳'},
+      {'code': 'ja', 'name': '日本語', 'flag': '🇯🇵'},
+      {'code': 'ru', 'name': 'Русский', 'flag': '🇷🇺'},
+      {'code': 'pt', 'name': 'Português', 'flag': '🇵🇹'},
+      {'code': 'hi', 'name': 'हिन्दी', 'flag': '🇮🇳'},
+      {'code': 'tr', 'name': 'Türkçe', 'flag': '🇹🇷'},
+    ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 16.0,
         children: [
+          // Language Selector
+          _buildLanguageCard(context, loc, theme, languages),
           EditRuleButton(
             reminder: reminder,
             breakTime: breakTime,
@@ -37,18 +58,238 @@ class Settings extends StatelessWidget {
           SwitcherSetting(
             enabled: forceModeEnabled,
             icon: Icons.lock_rounded,
-            title: "Force Mode",
-            subtitle: "Prevent window minimization during breaks",
+            title: loc.forceMode,
+            subtitle: loc.forceModeSubtitle,
             onChanged: _onUpdateForceMode,
           ),
           SwitcherSetting(
             enabled: startUpModeEnabled,
             icon: Icons.start,
-            title: "Startup at Login",
-            subtitle: "Launch application automatically at system startup",
+            title: loc.startupAtLogin,
+            subtitle: loc.startupAtLoginSubtitle,
             onChanged: _onUpdateStartupMode,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLanguageCard(
+    BuildContext context,
+    AppLocalizations loc,
+    ThemeData theme,
+    List<Map<String, String>> languages,
+  ) {
+    final currentLang = languages.firstWhere(
+      (lang) => lang['code'] == localeNotifier.value.languageCode,
+      orElse: () => languages.first,
+    );
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
+      ),
+      child: InkWell(
+        onTap: () => _showLanguageDialog(context, theme, languages),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primaryContainer,
+                      theme.colorScheme.primaryContainer.withAlpha(180),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.language_rounded,
+                  color: theme.colorScheme.primary,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      loc.language,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          currentLang['flag']!,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          currentLang['name']!,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: theme.colorScheme.onSurfaceVariant,
+                  size: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLanguageDialog(
+    BuildContext context,
+    ThemeData theme,
+    List<Map<String, String>> languages,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                margin: const EdgeInsets.only(top: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  AppLocalizations.of(context).language,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              Flexible(
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 4,
+                  ),
+                  itemCount: languages.length,
+                  itemBuilder: (context, index) {
+                    final lang = languages[index];
+                    final isSelected =
+                        lang['code'] == localeNotifier.value.languageCode;
+
+                    return _buildLanguageItem(context, theme, lang, isSelected);
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageItem(
+    BuildContext context,
+    ThemeData theme,
+    Map<String, String> lang,
+    bool isSelected,
+  ) {
+    return InkWell(
+      onTap: () {
+        localeNotifier.value = Locale(lang['code']!);
+        PreferenceService.setLanguage(lang['code']!);
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? theme.colorScheme.primaryContainer
+                  : theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.outlineVariant,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(lang['flag']!, style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                lang['name']!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color:
+                      isSelected
+                          ? theme.colorScheme.onPrimaryContainer
+                          : theme.colorScheme.onSurface,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 4),
+              Icon(
+                Icons.check_circle_rounded,
+                color: theme.colorScheme.primary,
+                size: 18,
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

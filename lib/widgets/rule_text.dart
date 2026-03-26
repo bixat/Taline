@@ -1,3 +1,4 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class RuleText extends StatelessWidget {
@@ -6,6 +7,7 @@ class RuleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 0,
@@ -32,7 +34,7 @@ class RuleText extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  "20-20-20 Rule",
+                  loc.ruleTitle,
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onPrimaryContainer,
@@ -42,7 +44,7 @@ class RuleText extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "Give your eyes a rest by following the 20-20-20 rule",
+              loc.ruleSubtitle,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.w600,
@@ -56,26 +58,25 @@ class RuleText extends StatelessWidget {
                       .withAlpha((0.8 * 255).round()),
                   height: 1.5,
                 ),
-                children: const [
+                children: [
                   TextSpan(
-                    text: "Every 20 minutes, ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    text: "${loc.ruleEvery20Minutes} ",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: "look away from your screen and focus on something ",
+                    text: "${loc.ruleLookAway} ",
                   ),
                   TextSpan(
-                    text: "20 feet away ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    text: "${loc.rule20FeetAway} ",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(text: "for "),
+                  TextSpan(text: "${loc.ruleFor} "),
                   TextSpan(
-                    text: "20 seconds. ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    text: loc.rule20Seconds,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text:
-                        "This helps reduce eye strain caused by prolonged screen use.",
+                    text: loc.ruleExplanation,
                   ),
                 ],
               ),
