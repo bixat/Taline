@@ -1,3 +1,4 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:rocket_timer/rocket_timer.dart';
 
@@ -16,6 +17,7 @@ class RuleTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
 
     return SizedBox(
       height: circleSize + 40,
@@ -63,7 +65,7 @@ class RuleTimer extends StatelessWidget {
                   ),
                   if (inBreak)
                     Text(
-                      'Break Time',
+                      loc.breakTime,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: theme.colorScheme.secondary,
                       ),

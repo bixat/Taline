@@ -1,11 +1,13 @@
+import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:eyes_care/main.dart';
-import 'package:eyes_care/widgets/edit_rule_button.dart';
+import 'package:eyes_care/widgets/settings.dart';
+import 'package:eyes_care/widgets/work_break_info.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rocket_timer/rocket_timer.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eyes_care/shared_pref.dart';
-import 'package:eyes_care/widgets/force_mode_check_box.dart';
 import 'package:eyes_care/widgets/rule_text.dart';
 import 'package:eyes_care/widgets/rule_timer.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -17,13 +19,14 @@ class CountdownScreen extends StatefulWidget {
   CountdownScreenState createState() => CountdownScreenState();
 }
 
-const size = Size(500, 900);
+const size = Size(500, 750);
 
 class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   RocketTimer? _timer;
   bool inBreak = false;
   bool isPaused = false;
   late ValueNotifier<bool> forceModeEnabled = ValueNotifier(false);
+  late ValueNotifier<bool> startUpModeEnabled = ValueNotifier(false);
   WindowOptions windowOptions = const WindowOptions(
     windowButtonVisibility: false,
     size: size,
@@ -40,9 +43,11 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   Duration get workDuration => Duration(minutes: reminder);
   Duration get breakDuration => Duration(seconds: breakTime);
 
+  final appVersion = ValueNotifier<String?>(null);
+
   @override
   void initState() {
-    setUpForceMode();
+    setUpSettings();
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
@@ -79,9 +84,14 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
     _timer!.start();
   }
 
-  setUpForceMode() {
+  setUpSettings() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    appVersion.value = packageInfo.version;
     PreferenceService.getBool(PreferenceService.forceModeKey).then((value) {
       forceModeEnabled.value = value ?? false;
+    });
+    PreferenceService.getBool(PreferenceService.startupModeKey).then((value) {
+      startUpModeEnabled.value = value ?? false;
     });
   }
 
@@ -120,11 +130,11 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   }
 
   Future<void> showNotification() async {
+    final loc = AppLocalizations.of(context);
     LocalNotification notification = LocalNotification(
-      title: inBreak ? "Stay Focused 💪" : "Take a Moment 🌟",
-      body: inBreak
-          ? "Keep your gaze on the screen. Remember, every 20 minutes, take a 20-second break looking at something 20 feet away."
-          : "Step back from the screen and focus on something 20 feet away for 20 seconds. Your eyes will thank you!",
+      title: inBreak ? loc.stayFocused : loc.takeAMoment,
+      body:
+          inBreak ? loc.breakNotification : loc.workNotification,
     );
     notification.onShow = _onShowNotification;
     notification.show();
@@ -150,6 +160,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -166,21 +177,29 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
         ),
         child: SafeArea(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // App Bar
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Eyes Care',
+                      loc.appTitle,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.primary,
                       ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        _showSettings(context);
+                      },
+                      icon: const Icon(Icons.settings),
                     ),
                     IconButton(
                       icon: Icon(
@@ -188,11 +207,14 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                             ? Icons.dark_mode_rounded
                             : Icons.light_mode_rounded,
                       ),
-                      onPressed: () {
-                        themeNotifier.value =
-                            themeNotifier.value == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light;
+                      onPressed: () async {
+                        if (themeNotifier.value == ThemeMode.light) {
+                          themeNotifier.value = ThemeMode.dark;
+                          await PreferenceService.setThemeMode('dark');
+                        } else {
+                          themeNotifier.value = ThemeMode.light;
+                          await PreferenceService.setThemeMode('light');
+                        }
                       },
                     ),
                   ],
@@ -204,66 +226,57 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                   Column(
                     children: [
                       RuleTimer(timer: _timer!, inBreak: inBreak),
+                      WorkBreakInfo(reminder: reminder, breakTime: breakTime),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AnimatedBuilder(
-                              animation: _timer!,
-                              builder: (context, _) {
-                                return IconButton(
-                                  icon: Icon(_timer!.status == TimerStatus.pause
+                            animation: _timer!,
+                            builder: (context, _) {
+                              return IconButton(
+                                icon: Icon(
+                                  _timer!.status == TimerStatus.pause
                                       ? Icons.play_arrow
-                                      : Icons.pause),
-                                  onPressed: () {
-                                    if (_timer!.status == TimerStatus.pause) {
-                                      _timer!.start();
-                                    } else {
-                                      _timer!.pause();
-                                    }
-                                  },
-                                );
-                              }),
+                                      : Icons.pause,
+                                ),
+                                onPressed: () {
+                                  if (_timer!.status == TimerStatus.pause) {
+                                    _timer!.start();
+                                  } else {
+                                    _timer!.pause();
+                                  }
+                                },
+                              );
+                            },
+                          ),
                           IconButton(
-                              onPressed: _restartTimer,
-                              icon: const Icon(Icons.restart_alt)),
+                            onPressed: _restartTimer,
+                            icon: const Icon(Icons.restart_alt),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 const SizedBox(height: 32),
 
                 // Rule Text Card
                 const RuleText(),
-                const SizedBox(height: 24),
-
-                // Edit Rule Button
-                EditRuleButton(
-                  reminder: reminder,
-                  breakTime: breakTime,
-                  onConfirm: (min, sec) {
-                    reminder = min;
-                    breakTime = sec;
-                    initTimer();
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Force Mode Toggle
-                ForceModeCheckBox(forceModeEnabled: forceModeEnabled),
-
                 const Spacer(),
 
                 // Version Info
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      // TODO: get from pubspect dynamiclly
-                      'v2.0.0',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                    ValueListenableBuilder(
+                      valueListenable: appVersion,
+                      builder: (context, value, _) {
+                        return Text(
+                          'v$value',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 4),
                     MouseRegion(
@@ -273,7 +286,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                           launchUrl(Uri.parse('https://bixat.dev'));
                         },
                         child: Text(
-                          'Powered by bixat.dev team',
+                          loc.poweredBy,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                             decoration: TextDecoration.underline,
@@ -288,6 +301,33 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
           ),
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _showSettings(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Settings(
+          reminder: reminder,
+          breakTime: breakTime,
+          forceModeEnabled: forceModeEnabled,
+          startUpModeEnabled: startUpModeEnabled,
+          onConfirm: (min, sec) {
+            setState(() {
+              reminder = min;
+              breakTime = sec;
+              _restartTimer();
+            });
+            PreferenceService.setDuration(min, sec);
+            PreferenceService.setBool(
+              PreferenceService.forceModeKey,
+              forceModeEnabled.value,
+            );
+            Navigator.pop(context);
+          },
+        );
+      },
     );
   }
 
