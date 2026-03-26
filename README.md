@@ -29,6 +29,8 @@ Taline is a desktop application built with Flutter, designed to help users maint
 - **Customizable Reminder:** Set personalized reminders to take breaks and rest your eyes based on your preferences, with options to follow the 20-20-20 rule or a custom time interval.
 - **Countdown Timer:** Monitor the time remaining until your next scheduled eye break, with a fully adjustable countdown timer feature to suit your needs.
 - **Notifications:** Get customizable desktop notifications or alerts to remind you when it's time for your next eye break with options for forcing take break mode.
+- **Multi-language Support:** Available in multiple languages including English, Arabic, Spanish, French, German, Portuguese, Russian, Chinese, Japanese, Hindi, and Turkish.
+- **Startup at Login:** Control whether Taline launches automatically when you log in to your computer.
 
 ## Coming soon
 
