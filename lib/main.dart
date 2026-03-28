@@ -64,7 +64,7 @@ class CareYourEyes extends StatelessWidget {
             const secondaryColor = Color(0xFF32CD32);
 
             return MaterialApp(
-              title: 'Eyes Care',
+              title: 'Taline',
               debugShowCheckedModeBanner: false,
               locale: localeValue,
               localizationsDelegates: const [

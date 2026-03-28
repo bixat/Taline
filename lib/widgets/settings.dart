@@ -15,13 +15,13 @@ class Settings extends StatelessWidget {
   final Function(int, int) onConfirm;
 
   const Settings({
-    Key? key,
+    super.key,
     required this.reminder,
     required this.breakTime,
     required this.forceModeEnabled,
     required this.onConfirm,
     required this.startUpModeEnabled,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +244,7 @@ class Settings extends StatelessWidget {
         PreferenceService.setLanguage(lang['code']!);
         Navigator.pop(context);
       },
+      
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
