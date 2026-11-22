@@ -60,6 +60,17 @@ Taline is a desktop application built with Flutter, designed to help users maint
 3. Install the dependencies: `flutter pub get`
 4. Run the app: `flutter run`
 
+### Linux Prerequisites & Troubleshooting
+
+Before building or running on Linux (Debian/Ubuntu-based distributions), install the required system libraries for Flutter Linux desktop, `audioplayers_linux`, and `local_notifier`:
+
+```bash
+sudo apt update && sudo apt install -y \
+  clang cmake ninja-build pkg-config libgtk-3-dev \
+  libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+  libnotify-dev
+```
+
 ## Usage
 
 1. Launch the Taline app on your desktop.
