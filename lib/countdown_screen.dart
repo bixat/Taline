@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:eyes_care/l10n/app_localizations.dart';
 import 'package:eyes_care/main.dart';
 import 'package:eyes_care/widgets/settings.dart';
@@ -29,15 +31,17 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
   bool isPaused = false;
   late ValueNotifier<bool> forceModeEnabled = ValueNotifier(false);
   late ValueNotifier<bool> startUpModeEnabled = ValueNotifier(false);
-  WindowOptions windowOptions = const WindowOptions(
-    windowButtonVisibility: false,
+  WindowOptions windowOptions = WindowOptions(
+    windowButtonVisibility: Platform.isLinux,
     size: size,
     minimumSize: size,
     maximumSize: size,
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
+    title: Platform.isLinux ? 'Taline' : null,
+    titleBarStyle:
+        Platform.isLinux ? TitleBarStyle.normal : TitleBarStyle.hidden,
   );
 
   late int reminder;
@@ -61,13 +65,13 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
     );
 
     setupTimer();
-    
+
     PrayerService().onAdhanStateChanged = (isPlaying) async {
       if (forceModeEnabled.value) {
         await handleWindowState();
       }
     };
-    
+
     super.initState();
   }
 
@@ -142,8 +146,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
     final loc = AppLocalizations.of(context);
     LocalNotification notification = LocalNotification(
       title: inBreak ? loc.stayFocused : loc.takeAMoment,
-      body:
-          inBreak ? loc.breakNotification : loc.workNotification,
+      body: inBreak ? loc.breakNotification : loc.workNotification,
     );
     notification.onShow = _onShowNotification;
     notification.show();
@@ -229,34 +232,43 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Tabs
                 ListenableBuilder(
                   listenable: PrayerService(),
                   builder: (context, _) {
                     final prayerService = PrayerService();
                     final isMuslimMode = prayerService.isMuslimModeEnabled;
-                    
+
                     return Expanded(
                       child: Column(
                         children: [
                           if (prayerService.isAdhanPlaying)
                             Container(
                               margin: const EdgeInsets.only(bottom: 16),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: theme.colorScheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Row(
                                 children: [
-                                  Icon(Icons.volume_up, color: theme.colorScheme.onPrimaryContainer),
+                                  Icon(
+                                    Icons.volume_up,
+                                    color: theme.colorScheme.onPrimaryContainer,
+                                  ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
-                                      loc.adhanIsPlaying, 
+                                      loc.adhanIsPlaying,
                                       style: TextStyle(
-                                        color: theme.colorScheme.onPrimaryContainer,
+                                        color:
+                                            theme
+                                                .colorScheme
+                                                .onPrimaryContainer,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -264,8 +276,10 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                                   TextButton(
                                     onPressed: () => prayerService.stopAdhan(),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: theme.colorScheme.onErrorContainer,
-                                      backgroundColor: theme.colorScheme.errorContainer,
+                                      foregroundColor:
+                                          theme.colorScheme.onErrorContainer,
+                                      backgroundColor:
+                                          theme.colorScheme.errorContainer,
                                     ),
                                     child: Text(loc.stopAdhan),
                                   ),
@@ -281,22 +295,31 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                                     if (_timer != null)
                                       Column(
                                         children: [
-                                          RuleTimer(timer: _timer!, inBreak: inBreak),
-                                          WorkBreakInfo(reminder: reminder, breakTime: breakTime),
+                                          RuleTimer(
+                                            timer: _timer!,
+                                            inBreak: inBreak,
+                                          ),
+                                          WorkBreakInfo(
+                                            reminder: reminder,
+                                            breakTime: breakTime,
+                                          ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               AnimatedBuilder(
                                                 animation: _timer!,
                                                 builder: (context, _) {
                                                   return IconButton(
                                                     icon: Icon(
-                                                      _timer!.status == TimerStatus.pause
+                                                      _timer!.status ==
+                                                              TimerStatus.pause
                                                           ? Icons.play_arrow
                                                           : Icons.pause,
                                                     ),
                                                     onPressed: () {
-                                                      if (_timer!.status == TimerStatus.pause) {
+                                                      if (_timer!.status ==
+                                                          TimerStatus.pause) {
                                                         _timer!.start();
                                                       } else {
                                                         _timer!.pause();
@@ -307,7 +330,9 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                                               ),
                                               IconButton(
                                                 onPressed: _restartTimer,
-                                                icon: const Icon(Icons.restart_alt),
+                                                icon: const Icon(
+                                                  Icons.restart_alt,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -327,11 +352,18 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                                   children: [
                                     TabBar(
                                       tabs: [
-                                        Tab(icon: const Icon(Icons.timer), text: loc.eyeCare),
-                                        Tab(icon: const Icon(Icons.mosque), text: loc.muslimMode),
+                                        Tab(
+                                          icon: const Icon(Icons.timer),
+                                          text: loc.eyeCare,
+                                        ),
+                                        Tab(
+                                          icon: const Icon(Icons.mosque),
+                                          text: loc.muslimMode,
+                                        ),
                                       ],
                                       labelColor: theme.colorScheme.primary,
-                                      unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
+                                      unselectedLabelColor:
+                                          theme.colorScheme.onSurfaceVariant,
                                     ),
                                     const SizedBox(height: 16),
                                     Expanded(
@@ -345,33 +377,56 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                                                 if (_timer != null)
                                                   Column(
                                                     children: [
-                                                      RuleTimer(timer: _timer!, inBreak: inBreak),
-                                                      WorkBreakInfo(reminder: reminder, breakTime: breakTime),
+                                                      RuleTimer(
+                                                        timer: _timer!,
+                                                        inBreak: inBreak,
+                                                      ),
+                                                      WorkBreakInfo(
+                                                        reminder: reminder,
+                                                        breakTime: breakTime,
+                                                      ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
                                                           AnimatedBuilder(
                                                             animation: _timer!,
-                                                            builder: (context, _) {
+                                                            builder: (
+                                                              context,
+                                                              _,
+                                                            ) {
                                                               return IconButton(
                                                                 icon: Icon(
-                                                                  _timer!.status == TimerStatus.pause
-                                                                      ? Icons.play_arrow
-                                                                      : Icons.pause,
+                                                                  _timer!.status ==
+                                                                          TimerStatus
+                                                                              .pause
+                                                                      ? Icons
+                                                                          .play_arrow
+                                                                      : Icons
+                                                                          .pause,
                                                                 ),
                                                                 onPressed: () {
-                                                                  if (_timer!.status == TimerStatus.pause) {
-                                                                    _timer!.start();
+                                                                  if (_timer!
+                                                                          .status ==
+                                                                      TimerStatus
+                                                                          .pause) {
+                                                                    _timer!
+                                                                        .start();
                                                                   } else {
-                                                                    _timer!.pause();
+                                                                    _timer!
+                                                                        .pause();
                                                                   }
                                                                 },
                                                               );
                                                             },
                                                           ),
                                                           IconButton(
-                                                            onPressed: _restartTimer,
-                                                            icon: const Icon(Icons.restart_alt),
+                                                            onPressed:
+                                                                _restartTimer,
+                                                            icon: const Icon(
+                                                              Icons.restart_alt,
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -395,7 +450,7 @@ class CountdownScreenState extends State<CountdownScreen> with WindowListener {
                         ],
                       ),
                     );
-                  }
+                  },
                 ),
 
                 // Version Info
